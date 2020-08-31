@@ -1,34 +1,32 @@
 # Wheel-of-Fortune
 this is coursera final project of python specialization in which I have done my part
 
-# PASTE YOUR WOFPlayer CLASS (from part A) HERE
-# PASTE YOUR WOFHumanPlayer CLASS (from part B) HERE
-# PASTE YOUR WOFComputerPlayer CLASS (from part C) HERE
 VOWEL_COST = 250
 LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 VOWELS = 'AEIOU'
 
-# Write the WOFPlayer class definition (part A) here
+
 class WOFPlayer():
+
     def __init__(self,name):
+    
         self.name=name
         self.prizeMoney=0
         self.prizes=[]
         #addMoney(amt): Add amt to self.prizeMoney
     def addMoney(self,amt):
         self.prizeMoney=self.prizeMoney+amt
-        #.goBankrupt(): Set self.prizeMoney to 0
+       
     def goBankrupt(self):
         self.prizeMoney=0
-        #.addPrize(prize): Append prize to self.prizes
+       
     def addPrize(self,prize):
         self.prizes.append(prize)
-        #.__str__(): Returns the player’s name and prize money in the following format:
-        #Steve ($1800) (for a player with instance variables .name == 'Steve' and prizeMoney == 1800)
+        
     def __str__(self):
         return("{} (${})".format(self.name,self.prizeMoney))
 
-# Write the WOFHumanPlayer class definition (part B) here
+
 class WOFHumanPlayer(WOFPlayer):
     def getMove(self,category, obscuredPhrase, guessed):
         print("{} has ${}".format(self.name,self.prizeMoney))
@@ -40,9 +38,10 @@ class WOFHumanPlayer(WOFPlayer):
         return q
 
 
-# Write the WOFComputerPlayer class definition (part C) here
+
 class WOFComputerPlayer(WOFPlayer):
     SORTED_FREQUENCIES='ZQXJKVBPYGFWMUCLDRHSNIOATE'
+    
     def __init__(self,name,difficulty):
         WOFPlayer.__init__(self,name)
         self.difficulty=difficulty
@@ -87,7 +86,6 @@ LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 VOWELS  = 'AEIOU'
 VOWEL_COST  = 250
 
-# Repeatedly asks the user for a number between min & max (inclusive)
 def getNumberBetween(prompt, min, max):
     userinp = input(prompt) # ask the first time
 
@@ -107,19 +105,11 @@ def getNumberBetween(prompt, min, max):
         # and ask again
         userinp = input('{}\n{}'.format(errmessage, prompt))
 
-# Spins the wheel of fortune wheel to give a random prize
-# Examples:
-#    { "type": "cash", "text": "$950", "value": 950, "prize": "A trip to Ann Arbor!" },
-#    { "type": "bankrupt", "text": "Bankrupt", "prize": false },
-#    { "type": "loseturn", "text": "Lose a turn", "prize": false }
 def spinWheel():
     with open("wheel.json", 'r') as f:
         wheel = json.loads(f.read())
         return random.choice(wheel)
 
-# Returns a category & phrase (as a tuple) to guess
-# Example:
-#     ("Artist & Song", "Whitney Houston's I Will Always Love You")
 def getRandomCategoryAndPhrase():
     with open("phrases.json", 'r') as f:
         phrases = json.loads(f.read())
@@ -128,11 +118,7 @@ def getRandomCategoryAndPhrase():
         phrase   = random.choice(phrases[category])
         return (category, phrase.upper())
 
-# Given a phrase and a list of guessed letters, returns an obscured version
-# Example:
-#     guessed: ['L', 'B', 'E', 'R', 'N', 'P', 'K', 'X', 'Z']
-#     phrase:  "GLACIER NATIONAL PARK"
-#     returns> "_L___ER N____N_L P_RK"
+
 def obscurePhrase(phrase, guessed):
     rv = ''
     for s in phrase:
@@ -142,14 +128,13 @@ def obscurePhrase(phrase, guessed):
             rv = rv+s
     return rv
 
-# Returns a string representing the current state of the game
 def showBoard(category, obscuredPhrase, guessed):
     return """
 Category: {}
 Phrase:   {}
 Guessed:  {}""".format(category, obscuredPhrase, ', '.join(sorted(guessed)))
 
-# GAME LOGIC CODE
+
 print('='*15)
 print('WHEEL OF PYTHON')
 print('='*15)
@@ -166,25 +151,23 @@ num_computer = getNumberBetween('How many computer players?', 0, 10)
 if num_computer >= 1:
     difficulty = getNumberBetween('What difficulty for the computers? (1-10)', 1, 10)
 
-# Create the computer player instances
 computer_players = [WOFComputerPlayer('Computer {}'.format(i+1), difficulty) for i in range(num_computer)]
 
 players = human_players + computer_players
 
-# No players, no game :(
+
 if len(players) == 0:
     print('We need players to play!')
     raise Exception('Not enough players')
 
-# category and phrase are strings.
+
 category, phrase = getRandomCategoryAndPhrase()
-# guessed is a list of the letters that have been guessed
+
 guessed = []
 
-# playerIndex keeps track of the index (0 to len(players)-1) of the player whose turn it is
 playerIndex = 0
 
-# will be set to the player instance when/if someone wins
+
 winner = False
 
 def requestPlayerMove(player, category, guessed):
